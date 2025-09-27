@@ -1,6 +1,13 @@
 import pandas as pd
 import numpy as np
-from sklearn import *
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, BaggingRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.svm import SVC, SVR
 import streamlit as st
 import pickle
 
@@ -34,4 +41,5 @@ if st.button('Predict the laptop Price'):
 
     prediction = model.predict(test_data)[0]
     st.success(f'Predicted Laptop Price: ₹{int(prediction)}')
+
 

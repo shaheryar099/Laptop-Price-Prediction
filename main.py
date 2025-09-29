@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-import joblib   # for loading sklearn models
-
 # -----------------------------
 # Load dataset and trained model
 # -----------------------------
@@ -45,3 +43,4 @@ if st.button('Predict Laptop Price'):
     prediction = model.predict(test_data)[0]
 
     st.success(f"💰 Predicted Laptop Price: {int(prediction):,} INR")
+

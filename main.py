@@ -4,7 +4,7 @@ import streamlit as st
 # -----------------------------
 # Load dataset and trained model
 # -----------------------------
-df = joblib.load(open('df.pkl', 'rb'))     # dataset
+
 model = joblib.load(open('rf.pkl', 'rb'))  # trained RandomForest model
 
 # -----------------------------
@@ -43,4 +43,5 @@ if st.button('Predict Laptop Price'):
     prediction = model.predict(test_data)[0]
 
     st.success(f"💰 Predicted Laptop Price: {int(prediction):,} INR")
+
 

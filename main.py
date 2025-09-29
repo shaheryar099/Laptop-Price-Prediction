@@ -1,34 +1,43 @@
-import pandas as pd
+import pandas 
 import numpy as np
+from sklearn import * 
 import streamlit as st
 import pickle
-from sklearn.ensemble import RandomForestRegressor
 
-# Load preprocessed data and model
-df = pickle.load(open('df.pkl', 'rb'))
-model = pickle.load(open('rf.pkl', 'rb'))
+df = pickle.load(open('df.pkl','rb'))
+model = pickle.load(open('rf.pkl','rb'))
 
-st.title('💻 Laptop Price Prediction')
-st.header('Fill the details to predict the price of the laptop')
 
-company = st.selectbox('Company Name', df['Company'].sort_values().unique())
-type_ = st.selectbox('Type Name', df['TypeName'].unique())
-ram = st.selectbox('RAM (GB)', df['Ram'].sort_values().unique())
-weight = st.number_input('Enter the weight (KG)')
-touchscreen = st.selectbox('Touch Screen', ['Yes', 'No'])
-ips = st.selectbox('IPS', ['Yes', 'No'])
-cpubrand = st.selectbox('CPU Brand', df['Cpu brand'].sort_values().unique())
-hdd = st.selectbox('HDD (GB)', [0, 32, 128, 500, 1000, 2000])
-ssd = st.selectbox('SSD (GB)', [0, 8, 16, 32, 64, 128, 180, 240, 256, 512, 768, 1000, 1024])
-gpu = st.selectbox('GPU Brand', df['Gpu brand'].sort_values().unique())
-os = st.selectbox('OS', df['os'].sort_values().unique())
+# ['Company', 'TypeName', 'Ram', 'Weight', 'Price', 'Touchscreen', 'Ips',
+ #      'Cpu brand', 'HDD', 'SSD', 'Gpu brand', 'os']
 
-if st.button('Predict the Laptop Price'):
-    touchscreen = 1 if touchscreen == 'Yes' else 0
-    ips = 1 if ips == 'Yes' else 0
+st.title('Laptop Price Prediction')
+st.header('Fill details to predict price of laptop')
+Company = st.selectbox('Company',df['Company'].unique())
+TypeName = st.selectbox('TypeName',df['TypeName'].unique())
+Ram = st.selectbox('Ram(in GB)',[8, 16,  4,  2, 12,  6, 32, 24, 64])
+Weight = st.number_input('Weight of the laptop')
+Touchscreen = st.selectbox('Touchscreen',['Yes','No'])
+Ips = st.selectbox('Ips',['Yes','No'])
+Cpu  = st.selectbox('CPU brand',df['Cpu brand'].unique())
+hdd = st.selectbox('HDD',[0, 32, 128, 500, 1000, 2000])
+ssd = st.selectbox('SSD',[0, 8, 16, 32, 64, 128, 180, 240, 256, 512, 768, 1000, 1024])
+Gpu = st.selectbox('GPU brand',df['Gpu brand'].unique())
+os = st.selectbox('OS',df['os'].unique())
 
-    # ⚠️ Here you need the same preprocessing as training
-    test_data = np.array([company, type_, ram, weight, touchscreen, ips, cpubrand, hdd, ssd, gpu, os]).reshape(1, -1)
-
-    prediction = model.predict(test_data)[0]
-    st.success(f'Predicted Laptop Price: ₹{int(prediction)}')
+if st.button('Predict Laptop Price'):
+    
+    if Touchscreen == 'Yes':
+        Touchscreen=1
+    else:
+        Touchscreen=0
+    if Ips == 'Yes':
+        Ips=1
+    else:
+        Ips=0
+    test_data = np.array([Company, TypeName, Ram, Weight,Touchscreen, Ips, Cpu, hdd, ssd, Gpu, os])
+    test_data = test_data.reshape([1,11])
+    
+    
+    st.success(model.predict(test_data)[0])
+    

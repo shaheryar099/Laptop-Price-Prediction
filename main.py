@@ -1,13 +1,13 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-import joblib   # better than pickle for sklearn objects
+import pickle   # using pickle since your model was saved with pickle
 
 # -----------------------------
 # Load dataset and trained model
 # -----------------------------
-df = joblib.load(open('df.pkl', 'rb'))     # dataset
-model = joblib.load(open('rf.pkl', 'rb'))  # trained RandomForest model
+df = pickle.load(open('df.pkl', 'rb'))     # dataset
+model = pickle.load(open('rf.pkl', 'rb'))  # trained RandomForest model
 
 # -----------------------------
 # Streamlit UI
@@ -41,7 +41,7 @@ if st.button('Predict Laptop Price'):
                              columns=['Company', 'TypeName', 'Ram', 'Weight', 'Touchscreen', 'Ips',
                                       'Cpu brand', 'HDD', 'SSD', 'Gpu brand', 'os'])
 
-    # ⚠️ IMPORTANT: Model must already include preprocessing (LabelEncoding/OneHotEncoding)
+    # ⚠️ IMPORTANT: model must already include preprocessing (LabelEncoder/OneHotEncoder)
     prediction = model.predict(test_data)[0]
 
     st.success(f"💰 Predicted Laptop Price: {int(prediction):,} INR")

@@ -1,47 +1,34 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-# -----------------------------
-# Load dataset and trained model
-# -----------------------------
+import pickle
+from sklearn import *
 
-model = joblib.load(open('rf.pkl', 'rb'))  # trained RandomForest model
+# Load preprocessed data and model
+df = pickle.load(open('df.pkl', 'rb'))
+model = pickle.load(open('rf.pkl', 'rb'))
 
-# -----------------------------
-# Streamlit UI
-# -----------------------------
 st.title('💻 Laptop Price Prediction')
-st.header('Fill in details to predict the price of a laptop')
+st.header('Fill the details to predict the price of the laptop')
 
-# User Inputs
-Company = st.selectbox('Company', df['Company'].unique())
-TypeName = st.selectbox('Type Name', df['TypeName'].unique())
-Ram = st.selectbox('RAM (GB)', [2, 4, 6, 8, 12, 16, 24, 32, 64])
-Weight = st.number_input('Weight of the laptop (kg)', min_value=0.5, max_value=5.0, step=0.1)
-Touchscreen = st.selectbox('Touchscreen', ['Yes', 'No'])
-Ips = st.selectbox('IPS Display', ['Yes', 'No'])
-Cpu = st.selectbox('CPU Brand', df['Cpu brand'].unique())
+company = st.selectbox('Company Name', df['Company'].sort_values().unique())
+type_ = st.selectbox('Type Name', df['TypeName'].unique())
+ram = st.selectbox('RAM (GB)', df['Ram'].sort_values().unique())
+weight = st.number_input('Enter the weight (KG)')
+touchscreen = st.selectbox('Touch Screen', ['Yes', 'No'])
+ips = st.selectbox('IPS', ['Yes', 'No'])
+cpubrand = st.selectbox('CPU Brand', df['Cpu brand'].sort_values().unique())
 hdd = st.selectbox('HDD (GB)', [0, 32, 128, 500, 1000, 2000])
 ssd = st.selectbox('SSD (GB)', [0, 8, 16, 32, 64, 128, 180, 240, 256, 512, 768, 1000, 1024])
-Gpu = st.selectbox('GPU Brand', df['Gpu brand'].unique())
-os = st.selectbox('Operating System', df['os'].unique())
+gpu = st.selectbox('GPU Brand', df['Gpu brand'].sort_values().unique())
+os = st.selectbox('OS', df['os'].sort_values().unique())
 
-# -----------------------------
-# Prediction
-# -----------------------------
-if st.button('Predict Laptop Price'):
-    # Convert Yes/No to binary
-    Touchscreen = 1 if Touchscreen == 'Yes' else 0
-    Ips = 1 if Ips == 'Yes' else 0
+if st.button('Predict the Laptop Price'):
+    touchscreen = 1 if touchscreen == 'Yes' else 0
+    ips = 1 if ips == 'Yes' else 0
 
-    # Create dataframe (same format as training)
-    test_data = pd.DataFrame([[Company, TypeName, Ram, Weight, Touchscreen, Ips, Cpu, hdd, ssd, Gpu, os]],
-                             columns=['Company', 'TypeName', 'Ram', 'Weight', 'Touchscreen', 'Ips',
-                                      'Cpu brand', 'HDD', 'SSD', 'Gpu brand', 'os'])
+    # ⚠️ Here you need the same preprocessing as training
+    test_data = np.array([company, type_, ram, weight, touchscreen, ips, cpubrand, hdd, ssd, gpu, os]).reshape(1, -1)
 
-    # ⚠️ Make sure your model pipeline already handles categorical encoding
     prediction = model.predict(test_data)[0]
-
-    st.success(f"💰 Predicted Laptop Price: {int(prediction):,} INR")
-
-
+    st.success(f'Predicted Laptop Price: ₹{int(prediction)}')
